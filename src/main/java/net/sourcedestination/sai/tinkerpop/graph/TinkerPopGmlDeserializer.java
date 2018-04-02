@@ -19,6 +19,8 @@ import java.util.stream.StreamSupport;
  * Created by jmorwick on 12/11/17.
  */
 public class TinkerPopGmlDeserializer implements GraphDeserializer<TinkerPopWrapper> {
+    public static Map<String,String> expectedClasses = new HashMap<>();
+
     @Override
     public TinkerPopWrapper apply(String gml) {
         return readGML(gml);
@@ -40,11 +42,32 @@ public class TinkerPopGmlDeserializer implements GraphDeserializer<TinkerPopWrap
             label = gml.substring(gml.indexOf("label")+5).trim().substring(1);
             label = label.substring(0,label.indexOf('"'));
         }
-        TinkerPopWrapper saiG = new TinkerPopWrapper(g, new Feature("label", label));
+        TinkerPopWrapper saiG = new TinkerPopWrapper(g,
+                new Feature("label", label),
+                new Feature("expected-classification",
+                        expectedClasses.getOrDefault(label, "")));
         return saiG;
     }
 
-    public static DBPopulator getGmlPopulator(File gmlFile) {
+    public static void getExpectedClassifications(File expectedClassesFile) {
+
+        try {
+            final Scanner input = new Scanner(expectedClassesFile);
+            while(input.hasNextLine()) {
+                Scanner line = new Scanner(input.nextLine().trim());
+                if(line.hasNext()) {
+                    String label = line.next();
+                    if(line.hasNext()) {
+                        expectedClasses.put(label, line.next());
+                    }
+                }
+            }
+        } catch(Exception e){}
+    }
+
+    public static DBPopulator getGmlPopulator(File gmlFile, File classesFile) {
+        getExpectedClassifications(classesFile);
+
         try {
             final Scanner input = new Scanner(gmlFile);
             input.useDelimiter("\\s*graph\\s*\\[");
