@@ -6,6 +6,8 @@ import com.tinkerpop.blueprints.Vertex;
 import net.sourcedestination.sai.graph.Feature;
 import net.sourcedestination.sai.graph.Graph;
 
+import java.util.Arrays;
+import java.util.Set;
 import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.stream.Stream;
@@ -17,9 +19,11 @@ import java.util.stream.StreamSupport;
 public class TinkerPopWrapper implements Graph {
 
     private com.tinkerpop.blueprints.Graph graph;
+    private final Feature[] features;
 
-    public TinkerPopWrapper(com.tinkerpop.blueprints.Graph g) {
+    public TinkerPopWrapper(com.tinkerpop.blueprints.Graph g, Feature ... features) {
         this.graph = g;
+        this.features = features;
     }
 
     @Override
@@ -38,7 +42,7 @@ public class TinkerPopWrapper implements Graph {
 
     @Override
     public Stream<Feature> getFeatures() {
-        return Stream.empty();
+        return Arrays.stream(features);
     }
 
     @Override

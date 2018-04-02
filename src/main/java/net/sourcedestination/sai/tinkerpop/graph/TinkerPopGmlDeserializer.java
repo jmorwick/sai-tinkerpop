@@ -2,6 +2,7 @@ package net.sourcedestination.sai.tinkerpop.graph;
 
 import com.tinkerpop.blueprints.impls.tg.TinkerGraph;
 import com.tinkerpop.blueprints.util.io.gml.GMLReader;
+import net.sourcedestination.sai.graph.Feature;
 import net.sourcedestination.sai.graph.Graph;
 import net.sourcedestination.sai.graph.GraphDeserializer;
 import net.sourcedestination.sai.task.DBPopulator;
@@ -9,10 +10,8 @@ import net.sourcedestination.sai.task.DBPopulator;
 import java.io.File;
 import java.io.IOException;
 import java.io.StringBufferInputStream;
-import java.util.Iterator;
-import java.util.Scanner;
-import java.util.Spliterator;
-import java.util.Spliterators;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -27,11 +26,21 @@ public class TinkerPopGmlDeserializer implements GraphDeserializer<TinkerPopWrap
 
     public static TinkerPopWrapper readGML(String gml) {
         com.tinkerpop.blueprints.Graph g = new TinkerGraph();
-        try { GMLReader.inputGraph(g,new StringBufferInputStream(gml)); }
+        try {
+            GMLReader.inputGraph(g,new StringBufferInputStream(gml));
+        }
         catch (IOException e) {
             throw new RuntimeException(e);
         }
-        TinkerPopWrapper saiG = new TinkerPopWrapper(g);
+
+
+        // hack to parse out the label, hope it comes first...
+        String label="";
+        if(gml.indexOf("label") != 0) {
+            label = gml.substring(gml.indexOf("label")+5).trim().substring(1);
+            label = label.substring(0,label.indexOf('"'));
+        }
+        TinkerPopWrapper saiG = new TinkerPopWrapper(g, new Feature("label", label));
         return saiG;
     }
 
