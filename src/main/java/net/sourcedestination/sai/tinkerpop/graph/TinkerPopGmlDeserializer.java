@@ -42,31 +42,11 @@ public class TinkerPopGmlDeserializer implements GraphDeserializer {
             label = label.substring(0,label.indexOf('"'));
         }
         TinkerPopWrapper saiG = new TinkerPopWrapper(g,
-                new Feature("label", label),
-                new Feature("expected-classification",
-                        expectedClasses.getOrDefault(label, "")));
+                new Feature("label", label));
         return saiG;
     }
 
-    public static void getExpectedClassifications(File expectedClassesFile) {
-
-        try {
-            final Scanner input = new Scanner(expectedClassesFile);
-            while(input.hasNextLine()) {
-                Scanner line = new Scanner(input.nextLine().trim());
-                if(line.hasNext()) {
-                    String label = line.next();
-                    if(line.hasNext()) {
-                        expectedClasses.put(label, line.next());
-                    }
-                }
-            }
-        } catch(Exception e){}
-    }
-
-    public static DBPopulator getGmlPopulator(File gmlFile, File classesFile) {
-        getExpectedClassifications(classesFile);
-
+    public static DBPopulator getGmlPopulator(File gmlFile) {
         try {
             final Scanner input = new Scanner(gmlFile);
             input.useDelimiter("\\s*graph\\s*\\[");
