@@ -2,23 +2,22 @@ package net.sourcedestination.sai.tinkerpop.graph;
 
 import com.tinkerpop.blueprints.impls.tg.TinkerGraph;
 import com.tinkerpop.blueprints.util.io.gml.GMLReader;
-import net.sourcedestination.sai.graph.Feature;
-import net.sourcedestination.sai.graph.Graph;
-import net.sourcedestination.sai.graph.GraphDeserializer;
-import net.sourcedestination.sai.task.DBPopulator;
+import net.sourcedestination.sai.db.graph.Feature;
+import net.sourcedestination.sai.db.graph.Graph;
+import net.sourcedestination.sai.db.graph.GraphDeserializer;
+import net.sourcedestination.sai.db.DBPopulator;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.StringBufferInputStream;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 /**
  * Created by jmorwick on 12/11/17.
  */
-public class TinkerPopGmlDeserializer implements GraphDeserializer<TinkerPopWrapper> {
+public class TinkerPopGmlDeserializer implements GraphDeserializer {
     public static Map<String,String> expectedClasses = new HashMap<>();
 
     @Override
